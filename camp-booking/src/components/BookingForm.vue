@@ -74,7 +74,16 @@ function handleSubmit() {
         />
       </n-form-item>
 
-      <n-form-item v-if="form.equipmentType === 'rv'" label="RV Subtype">
+      <template v-if="form.equipmentType === 'rv'">
+  <n-grid
+    responsive="screen"
+    :x-gap="16"
+    :y-gap="8"
+    cols="1 s:2 m:3"
+    class="rv-grid"
+  >
+    <n-gi>
+      <n-form-item label="RV Subtype">
         <n-select 
           v-model:value="form.rvSubtype"
           :options="[
@@ -88,6 +97,30 @@ function handleSubmit() {
           placeholder="Select RV type"
         />
       </n-form-item>
+    </n-gi>
+
+    <n-gi>
+      <n-form-item label="Number of Slideouts">
+        <n-input-number v-model:value="form.rvNumSlides" :min="0" />
+      </n-form-item>
+    </n-gi>
+
+    <n-gi>
+      <n-form-item label="Slideout(s) Location">
+        <n-select 
+          v-model:value="form.rvSlideSide"
+          :options="[
+            { label: 'Driver Side', value: 'driver' },
+            { label: 'Passenger Side', value: 'passenger' },
+            { label: 'Both Sides', value: 'both' }
+          ]"
+          placeholder="Select location"
+        />
+      </n-form-item>
+    </n-gi>
+  </n-grid>
+</template>
+
 
       <n-space justify="end" style="margin-top: 1.25rem;">
         <n-button type="primary" @click="handleSubmit">Submit</n-button>
@@ -100,4 +133,9 @@ function handleSubmit() {
 .booking-card {
   padding: 1rem;
 }
+
+.rv-grid {
+  width: 100%;
+}
+
 </style>
