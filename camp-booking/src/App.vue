@@ -1,83 +1,145 @@
 <script setup>
 import { ref } from 'vue'
+import { 
+  NForm, NFormItem, NInput, NSelect, NDatePicker, 
+  NButton, NSpace, NRadioGroup, NRadioButton, NInputNumber, NDivider, NCard
+} from 'naive-ui'
+import sitemap from './assets/sitemap_plain.svg'
 
-// Example of app-wide reactive state
-const currentStep = ref(1)
-const totalSteps = 3
+// Reactive booking form data
+const form = ref({
+  siteNumber: '',
+  checkIn: null,
+  checkOut: null,
+  numPeople: 1,
+  pets: false,
+  petCount: 0,
+  petTypes: '',
+  equipmentType: '',
+  rvSubtype: ''
+})
+
+// Equipment options
+const equipmentOptions = [
+  { label: 'RV', value: 'rv' },
+  { label: 'Tent', value: 'tent' },
+  { label: 'Other', value: 'other' }
+]
+
+// RV subtype options
+const rvTypes = [
+  { label: 'Class A', value: 'classA' },
+  { label: 'Class B', value: 'classB' },
+  { label: 'Class C', value: 'classC' },
+  { label: 'Fifth Wheel', value: 'fifthWheel' },
+  { label: 'Travel Trailer', value: 'travelTrailer' },
+  { label: 'Other', value: 'other' }
+]
+
+// Submit handler (for now just logs)
+function handleSubmit () {
+  console.log('Booking data:', form.value)
+  alert('Booking info logged to console for now.')
+}
+
+// Example handler: when you click a site on the map later
+function handleSiteClick(siteId) {
+  form.value.siteNumber = siteId
+}
 </script>
 
 <template>
-  <main class="booking-app">
-    <header>
-      <h1>Campground Booking</h1>
-      <p>Reserve your favorite campsite quickly and easily.</p>
-    </header>
+  <div class="booking-wrapper">
+    <div class="map-section">
+      <!-- Later replace this <img> with inline SVG so each site can be clickable -->
+      <img :src="sitemap" alt="Camp Map" class="camp-map" />
+    </div>
 
-    <!-- Step content (we'll build this next) -->
-    <section class="step-container">
-      <div v-if="currentStep === 1">
-        <h2>Select Site</h2>
-        <p>Site selection UI goes here...</p>
-      </div>
-      <div v-else-if="currentStep === 2">
-        <h2>Select Dates</h2>
-        <p>Date picker UI goes here...</p>
-      </div>
-      <div v-else-if="currentStep === 3">
-        <h2>Confirm & Pay</h2>
-        <p>Payment instructions (Venmo) go here...</p>
-      </div>
-    </section>
+    <n-card title="Book Your Campsite" class="booking-card">
+      <n-form :model="form" label-placement="top">
+        <n-form-item label="Site Number *">
+          <n-input v-model:value="form.siteNumber" placeholder="e.g., H4" />
+        </n-form-item>
 
-    <footer class="stepper">
-      <button :disabled="currentStep === 1" @click="currentStep--">Back</button>
-      <button :disabled="currentStep === totalSteps" @click="currentStep++">Next</button>
-    </footer>
-  </main>
+        <n-form-item label="Check-in Date *">
+          <n-date-picker v-model:value="form.checkIn" type="date" clearable />
+        </n-form-item>
+
+        <n-form-item label="Check-out Date *">
+          <n-date-picker v-model:value="form.checkOut" type="date" clearable />
+        </n-form-item>
+
+        <n-form-item label="Number of People">
+          <n-input-number v-model:value="form.numPeople" :min="1" />
+        </n-form-item>
+
+        <n-divider>Pets</n-divider>
+        <n-form-item label="Bringing Pets?">
+          <n-radio-group v-model:value="form.pets">
+            <n-radio-button :value="false">No</n-radio-button>
+            <n-radio-button :value="true">Yes</n-radio-button>
+          </n-radio-group>
+        </n-form-item>
+
+        <n-form-item v-if="form.pets" label="Number of Pets">
+          <n-input-number v-model:value="form.petCount" :min="1" />
+        </n-form-item>
+
+        <n-form-item v-if="form.pets" label="Pet Types">
+          <n-input v-model:value="form.petTypes" placeholder="e.g., 2 dogs, 1 cat" />
+        </n-form-item>
+
+        <n-divider>Equipment</n-divider>
+        <n-form-item label="Equipment Type">
+          <n-select 
+            v-model:value="form.equipmentType" 
+            :options="equipmentOptions" 
+            placeholder="Select type" 
+          />
+        </n-form-item>
+
+        <n-form-item v-if="form.equipmentType === 'rv'" label="RV Subtype">
+          <n-select 
+            v-model:value="form.rvSubtype" 
+            :options="rvTypes" 
+            placeholder="Select RV type" 
+          />
+        </n-form-item>
+
+        <n-space justify="end" style="margin-top: 1.25rem;">
+          <n-button type="primary" @click="handleSubmit">Submit</n-button>
+        </n-space>
+      </n-form>
+    </n-card>
+  </div>
 </template>
 
 <style scoped>
-.booking-app {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Inter, sans-serif;
-  background: #fff;
-  color: #111;
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-  max-width: 480px;
-  margin: 2rem auto;
+.booking-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
   padding: 2rem;
-  border: 1px solid #e5e7eb;
+  max-width: 1100px;
+  margin: 0 auto;
 }
-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-header h1 {
-  margin: 0 0 0.25rem;
-  font-weight: 700;
-}
-header p {
-  color: #6b7280;
-  font-size: 0.95rem;
-}
-.step-container {
-  min-height: 200px;
-  margin-bottom: 1.5rem;
-}
-footer.stepper {
+.map-section {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
 }
-button {
-  background: #111827;
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.5rem;
+.camp-map {
+  width: 100%;
+  max-width: 520px;
   border-radius: 10px;
-  cursor: pointer;
+  border: 1px solid #ccc;
 }
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.booking-card {
+  padding: 1rem;
+}
+@media (max-width: 900px) {
+  .booking-wrapper {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
