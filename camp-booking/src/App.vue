@@ -4,7 +4,7 @@ import {
   NForm, NFormItem, NInput, NSelect, NDatePicker, 
   NButton, NSpace, NRadioGroup, NRadioButton, NInputNumber, NDivider, NCard
 } from 'naive-ui'
-import sitemap from './assets/sitemap_plain.svg'
+import sitemap from '@/assets/sitemap_plain.svg'
 
 // Reactive booking form data
 const form = ref({
