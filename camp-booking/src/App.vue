@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import CampMap from '@/components/CampMap.vue'
 import BookingForm from '@/components/BookingForm.vue'
 
+const siteOptions = ref<Array<{label:string; value:string}>>([])
+
 const form = ref({
   siteNumber: '',
   checkIn: null,
@@ -12,10 +14,12 @@ const form = ref({
   petCount: 0,
   petTypes: '',
   equipmentType: '',
-  rvSubtype: ''
+  rvSubtype: '',
+  rvNumSlides: 0,
+  rvSlideSide: ''
 })
 
-function handleSubmit(data) {
+function handleSubmit(data:any) {
   console.log('Booking submitted:', data)
   alert('Booking info logged to console for now.')
 }
@@ -24,10 +28,17 @@ function handleSubmit(data) {
 <template>
   <div class="booking-wrapper">
     <div class="map-section">
-      <camp-map v-model="form.siteNumber" />
+      <camp-map
+        v-model="form.siteNumber"
+        @sites-ready="siteOptions = $event"
+      />
     </div>
 
-    <booking-form v-model="form" @submit="handleSubmit" />
+    <booking-form
+      v-model="form"
+      :site-options="siteOptions"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
