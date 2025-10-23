@@ -1,35 +1,38 @@
 <template>
   <div class="wrap">
-    <header class="topbar">
-      <router-link to="/" class="brand"><ZwLogo/></router-link>
-      <Hamburger :open="open" @toggle="open = !open" />
-    </header>
+    <NavBar :open="open" @toggle="open = !open" />
 
-    <n-drawer v-model:show="open" placement="right" width="280" :trap-focus="false">
-      <div class="drawer">
-        <router-link to="/about" @click="open=false">About Us</router-link>
-        <router-link to="/booking" @click="open=false">Booking</router-link>
-        <router-link to="/map" @click="open=false">Camp Map (coming soon)</router-link>
-        <router-link to="/gallery" @click="open=false">Gallery</router-link>
-        <router-link to="/faq" @click="open=false">FAQ</router-link>
-        <a href="https://ziggybrew.github.io/campground-booking/" target="_blank" rel="noopener">Live Site</a>
-      </div>
+    <n-drawer
+      v-model:show="open"
+      placement="right"
+      width="280"
+      :trap-focus="false"
+      :block-scroll="true"
+    >
+      <nav id="primary-menu" class="drawer">
+        <RouterLink to="/about" @click="open = false">About Us</RouterLink>
+        <RouterLink to="/booking" @click="open = false">Booking</RouterLink>
+        <RouterLink to="/map" @click="open = false">Camp Map (coming soon)</RouterLink>
+        <RouterLink to="/gallery" @click="open = false">Gallery</RouterLink>
+        <RouterLink to="/faq" @click="open = false">FAQ</RouterLink>
+        <RouterLink to="/" @click="open = false">Home</RouterLink>
+      </nav>
     </n-drawer>
 
     <main class="content">
-      <slot/>
+      <slot />
     </main>
 
     <footer class="footer">
-      <small>© {{year}} Ziggy’s Woods • Built with Vue & Naive UI</small>
+      <small>© {{ year }} Ziggy’s Woods • Built with Vue</small>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import ZwLogo from '@/components/branding/ZwLogo.vue'
-import Hamburger from '@/components/nav/Hamburger.vue'
+import NavBar from '@/components/nav/NavBar.vue'
+import { NDrawer, NDrawerContent } from 'naive-ui'
 
 const open = ref(false)
 const year = computed(() => new Date().getFullYear())
@@ -37,13 +40,6 @@ const year = computed(() => new Date().getFullYear())
 
 <style scoped>
 .wrap { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
-.topbar {
-  position: sticky; top: 0; z-index: 5; height: 64px; padding: 0 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(180deg, rgba(19,26,23,0.95), rgba(19,26,23,0.65));
-  backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.brand { display:flex; align-items:center; gap:.5rem }
 .content { padding: 24px; }
 .footer {
   padding: 24px; text-align: center; color: rgba(233,239,233,.7);
@@ -53,7 +49,10 @@ const year = computed(() => new Date().getFullYear())
 .drawer {
   display: grid; gap: 12px; padding: 16px;
 }
-.drawer a, .drawer .router-link-active {
-  color: var(--zw-cream); font-weight: 600;
+.drawer a {
+  color: var(--zw-cream);
+  font-weight: 600;
+  text-decoration: none;
 }
+.drawer a.router-link-active { text-decoration: underline; }
 </style>

@@ -1,3 +1,10 @@
+<template>
+  <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
+    <AppLayout>
+      <router-view />
+    </AppLayout>
+  </n-config-provider>
+</template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import CampMap from '@/components/CampMap.vue'
@@ -27,15 +34,6 @@ function handleSubmit(data:any) {
   alert('Booking info logged to console for now.')
 }
 </script>
-
-<template>
-  <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
-    <AppLayout>
-      <router-view />
-    </AppLayout>
-  </n-config-provider>
-</template>
-
 <style scoped>
 .booking-wrapper {
   display: grid;
