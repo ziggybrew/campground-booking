@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8">
+<script>
+  var p = location.pathname.replace(/\/+$/, '');
+  var repo = '/camp-booking';
+  if (!p.startsWith(repo)) repo = '';
+  location.replace(repo + '/index.html' + location.search + location.hash);
+</script>

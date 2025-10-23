@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ prod ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+      # Vite/React/Vue:
+      - run: npm run build
+      # Angular example (uncomment and adjust app folder):
+      # - run: npm run build -- --base-href "/<REPO_NAME>/"
+
+      # Upload the folder that contains your final static site:
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          # Vite defaults to dist/
+          path: ./dist
+          # Angular often outputs to dist/<project-name>
+          # path: ./dist/<your-angular-project>
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
