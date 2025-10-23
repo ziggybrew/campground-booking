@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import CampMap from '@/components/CampMap.vue'
 import BookingForm from '@/components/BookingForm.vue'
+import { darkTheme } from 'naive-ui'
+import { themeOverrides } from './theme'
+import AppLayout from './components/layout/AppLayout.vue'
 
 const siteOptions = ref<Array<{label:string; value:string}>>([])
 
@@ -26,20 +29,11 @@ function handleSubmit(data:any) {
 </script>
 
 <template>
-  <div class="booking-wrapper">
-    <div class="map-section">
-      <camp-map
-        v-model="form.siteNumber"
-        @sites-ready="siteOptions = $event"
-      />
-    </div>
-
-    <booking-form
-      v-model="form"
-      :site-options="siteOptions"
-      @submit="handleSubmit"
-    />
-  </div>
+  <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
+    <AppLayout>
+      <router-view />
+    </AppLayout>
+  </n-config-provider>
 </template>
 
 <style scoped>
