@@ -27,7 +27,9 @@
   </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { NCard, NButton } from 'naive-ui'
+</script>
 
 <style scoped>
 .hero {
