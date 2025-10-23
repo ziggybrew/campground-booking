@@ -1,23 +1,65 @@
 <script setup lang="ts">
   import { ref, watch, computed, h } from 'vue'
+  import type { PropType } from 'vue'
+  import type { SelectOption } from 'naive-ui'
   import { 
     NForm, NFormItem, NSelect, NDatePicker, 
     NButton, NSpace, NRadioGroup, NRadioButton, 
     NInputNumber, NDivider, NCard
   } from 'naive-ui'
 
+  // ---- Types ----
+  type SiteValue = string
+  interface IncomingSiteOption { label: string; value?: SiteValue }
+  type Kind = 'primitive' | 'full'
+  interface SiteSelectOption extends SelectOption {  // extends Naive's option shape
+    value: SiteValue
+    label: string
+    kind: Kind
+  }
+
+  interface FormModel {
+    siteNumber: SiteValue | null
+    checkIn: number | null
+    checkOut: number | null
+    numPeople: number | null
+    pets: boolean
+    petCount: number | null
+    petTypes: string
+    equipmentType: 'tent' | 'rv' | string
+    rvSubtype: string
+    rvNumSlides: number | null
+    rvSlideSide: string
+  }
+
+  const defaultForm: FormModel = {
+    siteNumber: null,
+    checkIn: null,
+    checkOut: null,
+    numPeople: 1,
+    pets: false,
+    petCount: null,
+    petTypes: '',
+    equipmentType: 'tent',
+    rvSubtype: '',
+    rvNumSlides: 0,
+    rvSlideSide: ''
+  }
+
   const props = defineProps({
-    modelValue: Object,
-    // optional: if you later pass site options from the map, we’ll use them
-    siteOptions: {
-      type: Array,
-      default: () => []
-    }
+    modelValue: { type: Object as PropType<Partial<FormModel> | undefined>, default: undefined },
+    siteOptions: { type: Array as PropType<IncomingSiteOption[]>, default: () => [] }
   })
 
-  const emit = defineEmits(['update:modelValue','submit'])
-  const form = ref({ ...props.modelValue })
-  watch(() => props.modelValue, v => { form.value = { ...v } }, { deep: true })
+  const emit = defineEmits<{
+    (e: 'update:modelValue', v: FormModel): void
+    (e: 'submit', v: FormModel): void
+  }>()
+
+  const form = ref<FormModel>({ ...defaultForm, ...(props.modelValue ?? {}) })
+  watch(() => props.modelValue, v => {
+    form.value = { ...defaultForm, ...(v ?? {}) }
+  }, { deep: true })
 
   function handleSubmit() { emit('submit', form.value) }
 
@@ -25,8 +67,8 @@
 
   const primitiveSet = new Set(['1','TS','48','50','52','54','56'])
 
-  const allSites = [
-    // numbers
+  const allSites: SiteValue[] = [
+    // RV sites
     '1','2','4','5','6','7','8','8.5','9','9.5','10','11','12','13','14','15','16',
     '17','18','19','20','22','23','24','25','27','28','29','30','31','33','35','36',
     '37','38','39','41','47','48','49','50','51','52','53','54','56',
@@ -34,14 +76,12 @@
     'H1','H2','H3','H4','H5','H6','H7','H8','H9','H10',
     // Tent city
     'T1','T2','T3','T4','T5','T6','T7',
-    // extra primitive tag from map
     'TS'
   ]
 
-  // natural sort: H1, H2, H10 etc.
-  function naturalSort(a, b) {
-    const ax = a.match(/\d+|\D+/g) || [a]
-    const bx = b.match(/\d+|\D+/g) || [b]
+  function naturalSort(a: SiteValue, b: SiteValue): number {
+    const ax = String(a).match(/\d+|\D+/g) || [String(a)]
+    const bx = String(b).match(/\d+|\D+/g) || [String(b)]
     const len = Math.max(ax.length, bx.length)
     for (let i = 0; i < len; i++) {
       const ac = ax[i] ?? '', bc = bx[i] ?? ''
@@ -53,31 +93,29 @@
     return 0
   }
 
-  // If props.siteOptions provided later from the map, prefer those.
-  // Otherwise build from our list and tag primitive/full.
-  const computedSiteOptions = computed(() => {
-    const base = (props.siteOptions?.length
-      ? props.siteOptions.map(o => o.value ?? o.label)
+  // Options now typed as SelectOption[] (compatible with NSelect)
+  const computedSiteOptions = computed<SiteSelectOption[]>(() => {
+    const base: SiteValue[] = (props.siteOptions?.length
+      ? props.siteOptions.map((o) => o.value ?? o.label)
       : allSites.slice()
     ).sort(naturalSort)
 
-    return base.map(s => ({
+    return base.map((s): SiteSelectOption => ({
       label: s,
       value: s,
       kind: primitiveSet.has(String(s)) ? 'primitive' : 'full'
     }))
   })
 
-  // Custom label renderer with icons
-  const renderSiteLabel = (option) => {
-    const icons = option.kind === 'full'
-      ? ['⚡','💧','🚽']        // electric, water, sewer
-      : []                    // primitive: no utilities
+  // Custom label renderer with icons (Naive will pass a SelectOption-like object)
+  const renderSiteLabel = (option: SelectOption) => {
+    const o = option as SiteSelectOption
+    const icons = o.kind === 'full' ? ['⚡','💧','🚽'] : []
     return h(
       'div',
       { class: 'site-opt' },
       [
-        h('span', { class: 'site-name' }, option.label),
+        h('span', { class: 'site-name' }, String(o.label)),
         ...icons.map(i => h('span', { class: 'site-ico' }, i))
       ]
     )
