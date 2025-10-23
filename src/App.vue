@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import CampMap from '@/components/CampMap.vue'
 import BookingForm from '@/components/BookingForm.vue'

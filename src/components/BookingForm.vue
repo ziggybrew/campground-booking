@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import { ref, watch, computed, h } from 'vue'
   import { 
     NForm, NFormItem, NSelect, NDatePicker, 
