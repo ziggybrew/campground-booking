@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import CampMap from '@/components/CampMap.vue'
-import BookingForm from '@/components/BookingForm.vue'
+import BookingForm from '@/components/booking/BookingForm.vue'
 import { darkTheme } from 'naive-ui'
 import { themeOverrides } from './theme'
 import AppLayout from './components/layout/AppLayout.vue'
