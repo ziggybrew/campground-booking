@@ -35,7 +35,6 @@ import { NCard, NButton } from 'naive-ui'
 
 <style scoped>
 .hero {
-  padding: 16px;
   display: grid;
   place-items: center;
   background:

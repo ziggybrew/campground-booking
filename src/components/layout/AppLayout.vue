@@ -34,7 +34,7 @@
 
 <style scoped>
 .wrap { min-height: 100dvh; display: grid; grid-template-rows: auto auto 1fr auto; }
-.content { padding: 24px; }
+.content { padding: 8px; }
 .footer {
   padding: 24px; text-align: center; color: rgba(233,239,233,.7);
   border-top: 1px solid rgba(255,255,255,0.06);
