@@ -1,21 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import path from 'path'
+import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
-  plugins: [vue({ customElement: true })],
-  base: '/camp-booking/',
+  base: '/campground-booking/',
+  plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  },
-  build: {
-    lib: {
-      entry: 'src/main.ce.ts',
-      name: 'CampBooking',
-      formats: ['es'],
-      fileName: () => `camp-booking.js`
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }
 })
