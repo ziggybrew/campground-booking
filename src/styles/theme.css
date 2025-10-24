@@ -9,6 +9,7 @@
   --zw-text: #e9efe9;
 
   --zw-radius: 16px;
+  --zw-radius-small: 8px;
   --zw-shadow: 0 10px 24px rgba(0,0,0,.25);
   --zw-font-display: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   --zw-font-body: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
