@@ -40,8 +40,7 @@ const trail = computed<Crumb[]>(() => {
 
 <style scoped>
 .crumb-wrap {
-  position: sticky;
-  top: 64px;           /* match your navbar height */
+  top: 64px;
   z-index: 40;
   padding: 10px 16px;
   background: linear-gradient(180deg, rgba(19,26,23,.85), rgba(19,26,23,.65));
@@ -49,7 +48,6 @@ const trail = computed<Crumb[]>(() => {
   backdrop-filter: blur(6px);
 }
 
-/* Tweak Naive breadcrumb spacing/colors to fit your theme */
 :deep(.n-breadcrumb) {
   color: rgba(233,239,233,.85);
 }
